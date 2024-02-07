@@ -1,12 +1,18 @@
 import discord
 from logger import logger
 from dotenv import load_dotenv
-from database import insert_message, has_introduced, record_introduction
+# Update imports to reflect new modular database structure
+from messages_db import insert_message
+from database_utils import init_db
+from guild_introductions_db import has_introduced, record_introduction  # Assuming guild_introduction functions are moved accordingly
 from config import DISCORD_TOKEN
 from discord.errors import HTTPException, Forbidden
 
 # Setup our bot Piper!
 logger.info("Starting Piper...")
+
+# Initialize the database
+init_db()
 
 intents = discord.Intents.default()
 intents.message_content = True
