@@ -50,6 +50,7 @@ def init_db():
             # Create guild introductions table
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS guild_introductions (
-                    guild_id TEXT UNIQUE
+                    guild_id TEXT UNIQUE,
+                    guild_name TEXT
                 )
             ''')

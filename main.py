@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 # Update imports to reflect new modular database structure
 from messages_db import insert_message
 from database_utils import init_db
-from guild_introductions_db import has_introduced, record_introduction  # Assuming guild_introduction functions are moved accordingly
+from guild_introductions_db import has_introduced, record_introduction
 from config import DISCORD_TOKEN
 from discord.errors import HTTPException, Forbidden
 
@@ -32,7 +32,7 @@ async def on_ready():
                 default_channel = next((channel for channel in guild.text_channels if channel.permissions_for(guild.me).send_messages), None)
                 if default_channel:
                     await default_channel.send("Hi there! I'm Piper, a bit of a shy observer here to learn from all the wonderful conversations happening. I promise to quietly listen and keep everything between us. I won't chime in for now, just soaking it all in. Thanks for letting me be a part of your space! 📚✨")
-                    record_introduction(str(guild.id))
+                    record_introduction(str(guild.id), guild.name)
             except HTTPException as e:
                 logger.error(f'HTTPException while sending introduction message: {e}')
             except Forbidden as e:
