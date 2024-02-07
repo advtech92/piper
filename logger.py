@@ -4,6 +4,7 @@ import requests
 import json
 
 # Discord Webhook URL
+from dotenv import load_dotenv
 from config import WEBHOOK_URL
 load_dotenv()
 
