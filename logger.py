@@ -9,6 +9,9 @@ from config import WEBHOOK_URL
 load_dotenv()
 
 class DiscordLoggingHandler(logging.Handler):
+    """
+    A logging handler that sends logs to a specified Discord webhook.
+    """
     def emit(self, record):
         log_entry = self.format(record)
         headers = {'Content-Type': 'application/json'}
@@ -21,6 +24,13 @@ class DiscordLoggingHandler(logging.Handler):
             print(f"Failed to send log to Discord: {e}")
 
 def setup_logging():
+    """
+    Sets up logging for the application. This includes a file handler for general logs
+    and a DiscordLoggingHandler for sending error logs to Discord.
+    
+    Returns:
+    - The configured logger.
+    """
     # Create a logger
     logger = logging.getLogger('Piper')
     logger.setLevel(logging.INFO)  # Adjust as needed

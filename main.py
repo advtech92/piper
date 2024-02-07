@@ -15,6 +15,10 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
+    """
+    Handles the event when the bot has successfully connected to Discord.
+    It checks each guild to send an introduction message if it hasn't already.
+    """
     logger.info(f'{client.user} has connected to Discord!')
     for guild in client.guilds:
         if not has_introduced(str(guild.id)):
@@ -32,6 +36,10 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    """
+    Handles incoming messages. If the message is not from the bot itself,
+    it stores the message in the database.
+    """
     if message.author == client.user:
         return
     try:
@@ -42,6 +50,9 @@ async def on_message(message):
 
 @client.event
 async def on_error(event, *args, **kwargs):
+    """
+    Global error handler for uncaught exceptions.
+    """
     logger.error(f'Unhandled exception in {event}', exc_info=True)
 
 load_dotenv()
