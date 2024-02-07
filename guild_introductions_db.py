@@ -32,9 +32,13 @@ def record_introduction(guild_id, guild_name):
     """
     try:
         with get_db_connection() as conn:
+            conn.execute("BEGIN")
             conn.execute("INSERT INTO guild_introductions (guild_id, guild_name) VALUES (?, ?) ON CONFLICT(guild_id) DO UPDATE SET guild_name = excluded.guild_name", (guild_id, guild_name))
+            conn.commit()
             logger.info(f"Introduction recorded for guild: {guild_name} (ID: {guild_id})")
+    except sqlite3.IntegrityError as e:
+        logger.info(f"Introduction already recorded for guild {guild_id}: {e}")
     except Exception as e:
-        logger.error(f"Error recording introduction for guild {guild_name} (ID: {guild_id}): {e}")
+        logger.error(f"Error recording introduction for guild {guild_id}: {e}")
         # Rollback in case of error
         conn.rollback()
