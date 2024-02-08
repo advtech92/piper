@@ -1,6 +1,7 @@
 import discord
 from logger import logger
 from dotenv import load_dotenv
+from discord import app_commands
 # Update imports to reflect new modular database structure
 from messages_db import insert_message
 from database_utils import init_db
@@ -39,6 +40,31 @@ async def on_ready():
                 logger.error(f'Forbidden: Cannot send introduction message due to lack of permissions: {e}')
             except Exception as e:
                 logger.error(f'Unexpected error while sending introduction message: {e}')
+    
+    tree = app_commands.CommandTree(client)
+    
+    # Slash command to join a voice channel
+    @tree.command(name='join', description='Join the voice channel you are currently in')
+    async def join(interaction: discord.Interaction):
+        if interaction.user.voice is None:
+            await interaction.response.send_message("You are not in a voice channel.", ephemeral=True)
+            return
+
+        channel = interaction.user.voice.channel
+        await channel.connect()
+        await interaction.response.send_message(f"Joined {channel.name}", ephemeral=True)
+
+    # Slash command to leave a voice channel
+    @tree.command(name='leave', description='Leave the voice channel')
+    async def leave(interaction: discord.Interaction):
+        voice_client = discord.utils.get(bot.voice_clients, guild=interaction.guild)
+        if voice_client and voice_client.is_connected():
+            await voice_client.disconnect()
+            await interaction.response.send_message("Left the voice channel.", ephemeral=True)
+        else:
+            await interaction.response.send_message("I'm not in a voice channel.", ephemeral=True)
+    
+    await tree.sync()
 
 @client.event
 async def on_message(message):

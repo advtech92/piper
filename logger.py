@@ -7,6 +7,7 @@ import json
 from dotenv import load_dotenv
 from config import WEBHOOK_URL
 load_dotenv()
+WEBHOOK_URL = (WEBHOOK_URL)
 
 class DiscordLoggingHandler(logging.Handler):
     """
