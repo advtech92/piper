@@ -57,7 +57,7 @@ async def on_ready():
     # Slash command to leave a voice channel
     @tree.command(name='leave', description='Leave the voice channel')
     async def leave(interaction: discord.Interaction):
-        voice_client = discord.utils.get(bot.voice_clients, guild=interaction.guild)
+        voice_client = discord.utils.get(client.voice_clients, guild=interaction.guild)
         if voice_client and voice_client.is_connected():
             await voice_client.disconnect()
             await interaction.response.send_message("Left the voice channel.", ephemeral=True)
