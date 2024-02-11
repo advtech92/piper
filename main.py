@@ -95,15 +95,15 @@ async def on_ready():
         channel_id = str(interaction.channel_id)
         if action == 'enable':
             private_channels.add(channel_id)
-            await interaction.response.send("You need to talk about something private? I gotcha! I'll go take notes elsewhere! (Privacy Mode Enabled)",ephemeral=True)
+            await interaction.response.send_message("You need to talk about something private? I gotcha! I'll go take notes elsewhere! (Privacy Mode Enabled)",ephemeral=True)
         elif action == 'disable':
             private_channels.discard(channel_id)
-            await interaction.response.send("Oh, I am back to take notes again! (Privacy Mode Disabled)", ephemeral=True)
+            await interaction.response.send_message("Oh, I am back to take notes again! (Privacy Mode Disabled)", ephemeral=True)
         elif action == 'check':
             if channel_id in private_channels:
                 await interaction.response.send_message("Don't worry! I am taking notes elsewhere until you ask! (Privacy Mode is Enabled)", ephemeral=True)
             else:
-                await interaction.response.send_messasge("Yep, I am still here taking notes! (Privacy Mode is Disabled)", ephemeral=True)
+                await interaction.response.send_message("Yep, I am still here taking notes! (Privacy Mode is Disabled)", ephemeral=True)
 
     await tree.sync()
 
