@@ -10,6 +10,7 @@ def update_user_profile(user_id, preferences=None):
                             VALUES (?, ?)
                             ON CONFLICT(user_id)
                             DO UPDATE SET preferences = excluded.preferences""",
-                         (user_id, preferences))
+                        (user_id, preferences))
+            conn.commit()
     except Exception as e:
         logger.error(f'Error updating user profile: {e}')

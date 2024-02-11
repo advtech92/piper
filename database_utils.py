@@ -81,8 +81,10 @@ def add_user_to_excluded(user_id):
     """Adds a user to the excluded_users table."""
     with get_db_connection() as conn:
         conn.execute("INSERT INTO excluded_users (user_id) VALUES (?) ON CONFLICT(user_id) DO NOTHING", (user_id,))
+    conn.commit()
 
 def remove_user_from_excluded(user_id):
     """Removes a user from the excluded_users table."""
     with get_db_connection() as conn:
         conn.execute("DELETE FROM excluded_users WHERE user_id = ?", (user_id,))
+    conn.commit()
