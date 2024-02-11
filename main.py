@@ -19,6 +19,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+private_channels = set()
 
 @client.event
 async def on_ready():
@@ -81,16 +82,38 @@ async def on_ready():
         except Exception as e:
             logger.error(f'Error including user: {e}')
             await interaction.response.send_message("Failed to include user.", ephemeral=True)
+    
+    @tree.command(name='private_mode', description='Toggle or Check Privacy Mode for the current channel')
+    @app_commands.describe(action='Check, Disable, or Enable Privacy Mode')
+    @app_commands.choices(action=[
+        app_commands.Choice(name='enable', value='enable'),
+        app_commands.Choice(name='disable', value='disable'),
+        app_commands.Choice(name='check', value='check')
+    ])
+    
+    async def private_mode(interaction: discord.Interaction, action: str):
+        channel_id = str(interaction.channel_id)
+        if action == 'enable':
+            private_channels.add(channel_id)
+            await interaction.response.send("You need to talk about something private? I gotcha! I'll go take notes elsewhere! (Privacy Mode Enabled)",ephemeral=True)
+        elif action == 'disable':
+            private_channels.discard(channel_id)
+            await interaction.response.send("Oh, I am back to take notes again! (Privacy Mode Disabled)", ephemeral=True)
+        elif action == 'check':
+            if channel_id in private_channels:
+                await interaction.response.send_message("Don't worry! I am taking notes elsewhere until you ask! (Privacy Mode is Enabled)", ephemeral=True)
+            else:
+                await interaction.response.send_messasge("Yep, I am still here taking notes! (Privacy Mode is Disabled)", ephemeral=True)
 
     await tree.sync()
 
 @client.event
 async def on_message(message):
     """
-    Handles incoming messages. If the message is not from the bot itself,
+    Handles incoming messages. If the message is not from the bot itself or it's not in a privacy mode channel,
     it stores the message in the database.
     """
-    if message.author == client.user:
+    if message.author == client.user or message.channel.id in private_channels:
         return
     try:
         # Store message in the database
