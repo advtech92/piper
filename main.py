@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord import app_commands
 # Update imports to reflect new modular database structure
 from messages_db import insert_message
-from database_utils import init_db
+from database_utils import init_db, add_user_to_excluded, remove_user_from_excluded
 from guild_introductions_db import has_introduced, record_introduction
 from config import DISCORD_TOKEN
 from discord.errors import HTTPException, Forbidden
@@ -64,6 +64,24 @@ async def on_ready():
         else:
             await interaction.response.send_message("I'm not in a voice channel.", ephemeral=True)
     
+    @tree.command(name='exclude_user', description='Exclude a user from message logging')
+    async def exclude_user(interaction: discord.Interaction, user_id: str):
+        try:
+            add_user_to_excluded(user_id)
+            await interaction.response.send_message(f"User {user_id} is now excluded from message logging.", ephemeral=True)
+        except Exception as e:
+            logger.error(f'Error excluding user: {e}')
+            await interaction.response.send_message("Failed to exclude user.", ephemeral=True)
+
+    @tree.command(name='include_user', description='Re-include a user to message logging')
+    async def include_user(interaction: discord.Interaction, user_id: str):
+        try:
+            remove_user_from_excluded(user_id)
+            await interaction.response.send_message(f"User {user_id} is now included in message logging.", ephemeral=True)
+        except Exception as e:
+            logger.error(f'Error including user: {e}')
+            await interaction.response.send_message("Failed to include user.", ephemeral=True)
+
     await tree.sync()
 
 @client.event
