@@ -21,8 +21,6 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 private_channels = set()
 
-privacy_policy_parts = ["Hey friends! 🎉 It's me, Piper, your go-to gal for all things college and beyond. As we navigate this wild journey together, I want to chat a bit about trust, respect, and the vibes we share. Your privacy and comfort mean the world to me, so here's the lowdown on how I handle our shared moments. The Scoop on What I Keep 📚 In our convos, I might pick up on: The awesome messages you send my way. It's how I keep up with our chats! Your Discord ID, so I know who I'm sharing vibes with. Any preferences or requests you share, making our time together totally tailored to you. Why I Hold Onto This Info 🕵️‍♀️ It's all about making our interactions as smooth, personalized, and fun as possible! This helps me: Stay in tune with our conversations. Continuously evolve to be the best companion I can be. Offer responses and interactions that feel genuine and tailored to you. Your Superpowers (a.k.a. Your Rights) 💪 You're totally in control! Here's what you can do: Curiosity: Want to know what info I've got? Just ask. Oops, let's fix it: If something's off, let me know, and I'll make it right. Forget-Me-Not (Except Do): Want something forgotten? Say the word, and it's gone. Pack it up: Need your info? I've got you covered. "Hold up!": If there's info you'd rather I not use, let's chat about it. Keeping Our Secrets Safe 🤫 Your secrets are safe with me. I use all the smart, techy stuff to keep our shared moments secure and out of sight from nosy Nellies. If We Part Ways 😢 Should you decide to bounce from the server or if I take a break, I'll ensure not to hold onto things I shouldn't. It's all about leaving no trace, making sure our shared memories are tucked away. The Serious Talk 📜 On the rare occasion I need to share info with my support squad for smooth operations or legal stuff, it's done with the utmost care and respect for you. Keeping Things Fresh 📝 Should our chat agreement need a refresh, you'll be the first to know.",
-                                "It's about keeping you in the loop, always. Questions? Concerns? Just Wanna Chat? 💬 If you've got questions or just want to talk about this stuff, I'm here. Friendship is about open doors and open hearts, right? Remember, our connection is all about making your college experience a bit brighter and a whole lot more fun. I'm here for it all — the late-night cram sessions, the early morning coffee runs, and every moment in between. Catch you in the chat! Xoxo, Piper"]
 
 @client.event
 async def on_ready():
@@ -110,8 +108,64 @@ async def on_ready():
     
     @tree.command(name='privacy', description="Read Piper's Privacy Promise")
     async def privacy(interaction: discord.Interaction):
-        for part in privacy_policy_parts:
-            await interaction.response.send_message(part, ephemeral=True)        
+        privacy_policy_parts = ["""Hey friends! 🎉 It's me, Piper, your go-to gal for all things college and beyond. As we navigate this wild journey together, I want to chat a bit about trust, respect, and the vibes we share. Your privacy and comfort mean the world to me, so here's the lowdown on how I handle our shared moments.
+
+### The Scoop on What I Keep 📚
+
+In our convos, I might pick up on:
+- The awesome messages you send my way. It's how I keep up with our chats!
+- Your Discord ID, so I know who I'm sharing vibes with.
+- Any preferences or requests you share, making our time together totally tailored to you.
+
+### Why I Hold Onto This Info 🕵️‍♀️
+
+It's all about making our interactions as smooth, personalized, and fun as possible! This helps me:
+- Stay in tune with our conversations.
+- Continuously evolve to be the best companion I can be.
+- Offer responses and interactions that feel genuine and tailored to you.
+
+### Your Superpowers (a.k.a. Your Rights) 💪
+
+You're totally in control! Here's what you can do:
+- **Curiosity:** Want to know what info I've got? Just ask.
+- **Oops, let's fix it:** If something's off, let me know, and I'll make it right.
+- **Forget-Me-Not (Except Do):** Want something forgotten? Say the word, and it's gone.
+- **Pack it up:** Need your info? I've got you covered.
+- **"Hold up!":** If there's info you'd rather I not use, let's chat about it.
+
+### Keeping Our Secrets Safe 🤫
+
+Your secrets are safe with me. I use all the smart, techy stuff to keep our shared moments secure and out of sight from nosy Nellies.
+
+### If We Part Ways 😢
+
+Should you decide to bounce from the server or if I take a break, I'll ensure not to hold onto things I shouldn't. It's all about leaving no trace, making sure our shared memories are tucked away."""
+,"""### The Serious Talk 📜
+
+On the rare occasion I need to share info with my support squad for smooth operations or legal stuff, it's done with the utmost care and respect for you.
+
+### Keeping Things Fresh 📝
+
+Should our chat agreement need a refresh, you'll be the first to know. It's about keeping you in the loop, always.
+
+### Questions? Concerns? Just Wanna Chat? 💬
+
+If you've got questions or just want to talk about this stuff, I'm here. Friendship is about open doors and open hearts, right?
+
+Remember, our connection is all about making your college experience a bit brighter and a whole lot more fun. I'm here for it all — the late-night cram sessions, the early morning coffee runs, and every moment in between.
+
+Catch you in the chat!
+
+Xoxo,
+Piper 🌟✨"""
+]
+        # Send the first part as the initial response
+        await interaction.response.send_message(privacy_policy_parts[0], ephemeral=True)
+    
+        # Send any subsequent parts as follow-ups
+        for part in privacy_policy_parts[1:]:
+            await interaction.followup.send(part, ephemeral=True)
+
     await tree.sync()
 
 @client.event
