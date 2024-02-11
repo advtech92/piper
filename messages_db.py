@@ -49,3 +49,14 @@ def log_message_edit(original_id, new_content, author_id, channel_id):
         conn.execute("INSERT INTO messages (content, author_id, channel_id, edit_id) VALUES (?, ?, ?, ?)",
                     (new_content, author_id, channel_id, new_edit_id))
         conn.commit()
+        
+# GDPR Complicance Code
+def delete_message_by_user(user_id):
+    with get_db_connection() as conn:
+        conn.execute("DELETE FROM messages WHERE author_id = ?", (user_id,))
+        conn.commit()
+
+def delete_message_by_guild(guild_id):
+    with get_db_connection() as conn:
+        conn.execute("DELETE FROM messages WHERE channel_id IN (SELECT id FROM channels WHERE guild_id = ?)",(guild_id,))
+        conn.commit()
