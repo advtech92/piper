@@ -22,8 +22,9 @@ def init_db():
                     content TEXT,
                     author_id TEXT,
                     channel_id TEXT,
+                    edit_id TEXT DEFAULT 'a',
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
+                    );
             ''')
 
             # Create user profiles table

@@ -3,7 +3,7 @@ from logger import logger
 from dotenv import load_dotenv
 from discord import app_commands
 # Update imports to reflect new modular database structure
-from messages_db import insert_message
+from messages_db import insert_message, log_message_edit
 from database_utils import init_db, add_user_to_excluded, remove_user_from_excluded
 from guild_introductions_db import has_introduced, record_introduction
 from config import DISCORD_TOKEN
@@ -120,6 +120,11 @@ async def on_message(message):
         insert_message(message.content, message.author.id, message.channel.id)
     except Exception as e:
         logger.error(f'Unexpected error while processing message: {e}')
+
+@client.event
+async def on_message_edit(before, after):
+    if before.content != after.content:  # Check if the content has actually changed
+        log_message_edit(before.id, after.content, str(after.author.id), str(after.channel.id))
 
 @client.event
 async def on_error(event, *args, **kwargs):
