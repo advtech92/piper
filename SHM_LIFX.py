@@ -1,6 +1,7 @@
 #SHM_LIFX.py
 import requests
 from config import LIFX_TOKEN
+import time
 
 # Global variables for API access
 BASE_URL = "https://api.lifx.com/v1/lights"
@@ -29,8 +30,8 @@ def perform_request(url, method="put", payload=None):
 
 def set_light_state(selector, power=None, brightness=None, color=None, kelvin=None):
     """
-    Sets the state of a LIFX light, including power, brightness, color, and Kelvin,
-    and returns information about the light(s) adjusted.
+    Attempts to set the state of a LIFX light, including power, brightness, color, and Kelvin,
+    up to 100 times in under a minute before reporting failure.
     """
     url = f"{BASE_URL}/{selector}/state"
     payload = {}
@@ -43,16 +44,24 @@ def set_light_state(selector, power=None, brightness=None, color=None, kelvin=No
     if kelvin:
         payload["color"] = f"kelvin:{kelvin}"
     
-    response = perform_request(url, payload=payload)
-    if response:
-        # Extract light details from the response. This is a placeholder; actual implementation depends on LIFX response.
-        # Assuming response contains a list of affected lights.
-        affected_lights = [light['label'] for light in response] if response else ['the light']
-        affected_lights_str = ", ".join(affected_lights)
-        
-        feedback_msg = f"Alrighty, I've adjusted {affected_lights_str} for you! ✨"
-        if color or kelvin:
-            feedback_msg += f" Set to {'colorful shades' if color else 'a chill temperature'}."
-        send_feedback(feedback_msg)
-    else:
-        send_feedback("Hmm, seems like I couldn't chat with the lights. Let me try that again later.")
+    max_attempts = 100
+    attempt = 0
+    success = False
+    
+    while attempt < max_attempts and not success:
+        response = perform_request(url, payload=payload)
+        if response:
+            # Assuming response contains a list of affected lights for simplicity
+            affected_lights = [light['label'] for light in response] if response else ['the light']
+            affected_lights_str = ", ".join(affected_lights)
+            feedback_msg = f"Alrighty, I've adjusted {affected_lights_str} for you! ✨"
+            if color or kelvin:
+                feedback_msg += f" Set to {'colorful shades' if color else 'a chill temperature'}."
+            send_feedback(feedback_msg)
+            success = True
+        else:
+            time.sleep(0.6)  # Sleep to spread out the requests and avoid hitting the rate limit
+            attempt += 1
+    
+    if not success:
+        send_feedback("Hmm, seems like I couldn't chat with the lights after trying a bunch. Let me try that again later.")
