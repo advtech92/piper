@@ -65,3 +65,29 @@ def set_light_state(selector, power=None, brightness=None, color=None, kelvin=No
     
     if not success:
         send_feedback("Hmm, seems like I couldn't chat with the lights after trying a bunch. Let me try that again later.")
+
+def handle_lifx_command(command_text):
+    command_text = command_text.lower()
+    selector = "label:Desk Light"  # Targeting your 'Desk Light'
+
+    # Checking for power commands
+    if "turn on the light" in command_text or "turn on the desk light" in command_text:
+        set_light_state(selector, power="on")
+    elif "turn off the light" in command_text or "turn off the desk light" in command_text:
+        set_light_state(selector, power="off")
+    
+    # Checking for color commands
+    elif "set light to blue" in command_text or "set desk light to blue" in command_text:
+        set_light_state(selector, color="blue")
+    elif "set light to red" in command_text or "set desk light to red" in command_text:
+        set_light_state(selector, color="red")
+    
+    # Checking for brightness commands
+    elif "dim the light" in command_text or "dim the desk light" in command_text:
+        set_light_state(selector, brightness=0.2)  # Example: dim to 20% brightness
+    elif "brighten the light" in command_text or "brighten the desk light" in command_text:
+        set_light_state(selector, brightness=1)  # Brighten to 100% brightness
+    
+    # Add more conditions as needed for other functionalities
+    else:
+        send_feedback("I'm not sure how to do that with the light. Can you try a different command?")

@@ -2,12 +2,25 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+
+# Discord
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 WEBHOOK_URL = os.getenv('WEBHOOK_URL')
+
+# WakeWord
+PV_ACCESSKEY = os.getenv('PICOVOICE_ACCESS_TOKEN')
+### SMART HOME MODULES ###
+# LIFX
 LIFX_TOKEN = os.getenv('LIFX_TOKEN')
+
+# WYZE
 WYZE_ACCESS_TOKEN = os.getenv('WYZE_ACCESS_TOKEN')
 WYZE_EMAIL = os.getenv('WYZE_EMAIL')
 WYZE_PASSWORD = os.getenv('WYZE_PASSWORD')
 WYZE_KEY_ID = os.getenv('WYZE_KEY_ID')
 WYZE_API_KEY = os.getenv('WYZE_API_KEY')
-PV_ACCESSKEY = os.getenv('PICOVOICE_ACCESS_TOKEN')
+
+# SPOTIPY/SPOTIFY
+SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
+SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
+SPOTIPY_REDIRECT_URI = os.getenv('SPOTIPY_REDIRECT_URI')
