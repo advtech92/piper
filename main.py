@@ -8,6 +8,8 @@ from database_utils import init_db, add_user_to_excluded, remove_user_from_exclu
 from guild_introductions_db import has_introduced, record_introduction
 from config import DISCORD_TOKEN
 from discord.errors import HTTPException, Forbidden
+import threading
+from Piper_STT import start_voice_recognition_loop
 
 # Setup our bot Piper!
 logger.info("Starting Piper...")
@@ -203,6 +205,10 @@ async def on_member_remove(member):
 @client.event
 async def on_guild_remove(guild):
     delete_message_by_guild(str(guild.id))
+    
+# SR Code:
+voice_thread = threading.Thread(target=start_voice_recognition_loop, daemon=True)
+voice_thread.start()
 
 load_dotenv()
 client.run(DISCORD_TOKEN)

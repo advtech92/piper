@@ -53,7 +53,7 @@ def listen_for_wake_word_porcupine(wake_word_path="Hey-Piper_en_windows_v3_0_0/H
 
 def recognize_speech_from_mic(timeout=5, phrase_time_limit=10):
     """
-    Transcribes speech from recorded from the microphone after the wake word has been detected.
+    Transcribes speech from the microphone.
     """
     recognizer = sr.Recognizer()
     mic = sr.Microphone()
@@ -63,24 +63,35 @@ def recognize_speech_from_mic(timeout=5, phrase_time_limit=10):
         try:
             audio = recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_time_limit)
         except sr.WaitTimeoutError:
-            print("Uh-oh, looks like you took a bit too long. Let's try again?")
+            print("Listening timed out.")
             return {"error": "Listening timed out."}
 
     try:
-        # Using PocketSphinx for offline recognition
         transcription = recognizer.recognize_sphinx(audio)
         print(f"Got it! You said: {transcription}")
         return {"transcription": transcription, "error": None}
-    except sr.UnknownValueError:
-        print("Hmm, I didn't quite catch that. Could you try speaking a little more clearly?")
-        return {"error": "I couldn't understand that."}
-    except sr.RequestError as e:
-        print(f"Yikes, I'm having a bit of trouble understanding you right now. {e}")
-        return {"error": "Service error."}
+    except (sr.UnknownValueError, sr.RequestError) as e:
+        print(f"Error understanding audio: {e}")
+        return {"error": str(e)}
 
-# Example usage
-if __name__ == "__main__":
-    if listen_for_wake_word_porcupine(wake_word_path="Hey-Piper_en_windows_v3_0_0/Hey-Piper_en_windows_v3_0_0.ppn"):
-        recognize_speech_from_mic()
+def handle_command(command):
+    """
+    Determines the type of command (Spotify or LIFX) and calls the appropriate handler.
+    """
+    command = command.lower()
+    if "spotify" in command:
+        handle_spotify_command(command)
+    elif "light" in command or "lifx" in command:
+        handle_lifx_command(command)
     else:
-        print("Seems like you didn't call for me. If you need me, just say 'Hey Piper'!")
+        print("I'm not sure how to handle that command. Please try again.")
+
+def start_voice_recognition_loop():
+    while True:
+        if listen_for_wake_word_porcupine():
+            speech_result = recognize_speech_from_mic()
+            if speech_result and speech_result["error"] is None:
+                # Process the recognized speech
+                handle_command(speech_result["transcription"])
+            else:
+                print("There was an error processing your command.")
