@@ -4,6 +4,8 @@ import pvporcupine
 import pyaudio
 import struct
 import speech_recognition as sr
+from SHM_LIFX import handle_lifx_command
+from SHM_Spotify import handle_spotify_command
 
 ACCESS_KEY = PV_ACCESSKEY
 
